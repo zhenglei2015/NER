@@ -119,8 +119,9 @@ def predict(net, tag_table, sess):
 
     # 获取原文本的iterator
     file_iter = file_content_iterator(pred_file)
-
+    cnt = 0
     while True:
+        cnt += 1
         # batch等于1的时候本来就没有padding，如果批量预测的话，记得这里需要做长度的截取。
         try:
             tf_unary_scores, tf_transition_params = sess.run(
@@ -137,7 +138,16 @@ def predict(net, tag_table, sess):
         tags = []
         for id in viterbi_sequence:
             tags.append(sess.run(tag_table.lookup(tf.constant(id, dtype=tf.int64))))
-        write_result_to_file(file_iter, tags)
+        write_result_to_file(file_iter, tags, cnt)
+        # def write_result_to_file(iterator, tags):
+        #     raw_content = next(iterator)
+        #     words = raw_content.split()
+        #     assert len(words) == len(tags)
+        #     for w,t in zip(words, tags):
+        #         print w, '(' + t + ')',
+        #     print
+        #     print '*' * 100
+
 
 
 if __name__ == '__main__':

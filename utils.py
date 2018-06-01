@@ -283,14 +283,22 @@ def file_content_iterator(file_name):
             yield line.strip()
 
 
-def write_result_to_file(iterator, tags):
+def write_result_to_file(iterator, tags, cnt):
     raw_content = next(iterator)
     words = raw_content.split()
-    assert len(words) == len(tags)
-    for w,t in zip(words, tags):
-        print w, '(' + t + ')',
-    print
-    print '*' * 100
+    if len(words) != len(tags):
+        fi = open("error_lines.txt", "a")
+        fi.write(str(cnt) + "\n")
+        fi.close()
+    else:
+        fi = open("result.txt", "a")
+        for w,t in zip(words, tags):
+            fi.write(w + " " + t + "\n")
+            print w, " ", t
+        fi.write("\n")
+        fi.close()
+        print
+        print '*' * 100
 
 
 build_word_index()
