@@ -2,7 +2,7 @@
 from tensorflow.contrib.rnn import DropoutWrapper
 from utils import *
 import time
-
+import math 
 BATCH_SIZE = config.FLAGS.batch_size
 unit_num = embeddings_size         # 默认词向量的大小等于RNN(每个time step) 和 CNN(列) 中神经单元的个数, 为了避免混淆model中全部用unit_num表示。
 time_step = max_sequence      # 每个句子的最大长度和time_step一样,为了避免混淆model中全部用time_step表示。
