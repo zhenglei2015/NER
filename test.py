@@ -1,3 +1,4 @@
+
 def write_nll():
     right = []
     guess = []
@@ -20,6 +21,20 @@ def write_nll():
             fi.write(s1[0] + " " + s1[1].strip() + " " + s2[1])
         else:
             fi.write("\n")
+
+def cal_f1(tag_to_index_table):
+    tag_file = ""
+    write_nll()
+    fi = open("nll.txt", "r")
+    ground_truth = []
+    pred = []
+    for line in fi:
+        line = line.strip()
+        s = line.split(" ")
+        if len(s) > 1:
+            ground_truth.append(tag_to_index_table[s[0]])
+            pred.append(tag_to_index_table[s[1]])
+
 
 def split_file():
     fi = open("dev.eval", "r")

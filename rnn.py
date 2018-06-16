@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*
 from tensorflow.contrib.rnn import DropoutWrapper
+from sklearn.metrics import precision_score, recall_score, f1_score
 from utils import *
 import time
 import math
@@ -79,6 +80,7 @@ def train(net, iterator, sess):
         saver.restore(sess, path)
 
     current_epoch = sess.run(net.global_step)
+    tag_table = tag_to_id_table()
     while True:
         if current_epoch > EPOCH: break
         try:
@@ -94,6 +96,8 @@ def train(net, iterator, sess):
             if current_epoch % (EPOCH / 10) == 0 and current_epoch != 0:
                 sess.run(tf.assign(net.global_step, current_epoch))
                 saver.save(sess, model_path+'points', global_step=current_epoch)
+                predict(net, tag_table, sess)
+
 
             current_epoch += 1
 
