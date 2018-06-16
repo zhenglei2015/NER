@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*
 from tensorflow.contrib.rnn import DropoutWrapper
 from utils import *
-
+import time
 
 BATCH_SIZE = config.FLAGS.batch_size
 unit_num = embeddings_size         # 默认词向量的大小等于RNN(每个time step) 和 CNN(列) 中神经单元的个数, 为了避免混淆model中全部用unit_num表示。
@@ -122,6 +122,7 @@ def predict(net, tag_table, sess):
     cnt = 0
     while True:
         cnt += 1
+        rnn_cost = time.time()
         # batch等于1的时候本来就没有padding，如果批量预测的话，记得这里需要做长度的截取。
         try:
             tf_unary_scores, tf_transition_params = sess.run(
@@ -129,16 +130,19 @@ def predict(net, tag_table, sess):
         except tf.errors.OutOfRangeError:
             print 'Prediction finished!'
             break
-
+        rnn_cost = time.time() - rnn_cost
+        print "rnn_cost", rnn_cost
         # 把batch那个维度去掉
         tf_unary_scores = np.squeeze(tf_unary_scores)
-
+        crf_cost = time.time()
         viterbi_sequence, _ = tf.contrib.crf.viterbi_decode(
             tf_unary_scores, tf_transition_params)
         tags = []
         for id in viterbi_sequence:
             tags.append(sess.run(tag_table.lookup(tf.constant(id, dtype=tf.int64))))
         write_result_to_file(file_iter, tags, cnt)
+        crf_cost = time.time() - crf_cost
+        print "crf_cost", crf_cost
         # def write_result_to_file(iterator, tags):
         #     raw_content = next(iterator)
         #     words = raw_content.split()
