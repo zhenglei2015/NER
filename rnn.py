@@ -67,7 +67,7 @@ class NER_net:
 
         # Add a training op to tune the parameters.
         self.loss = tf.reduce_mean(-self.log_likelihood)
-        self.train_op = tf.train.AdamOptimizer().minimize(self.loss)
+        self.train_op = tf.train.AdamOptimizer(learning_rate=1e-5, beta2=0.99).minimize(self.loss)
 
 
 def train(net, iterator, sess):

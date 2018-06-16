@@ -15,7 +15,7 @@ tf.app.flags.DEFINE_integer("max_sequence", 100, "max sequence length.")
 
 tf.app.flags.DEFINE_integer("batch_size", 128, "batch size.")
 tf.app.flags.DEFINE_integer("epoch", 10000, "epoch.")
-tf.app.flags.DEFINE_float("dropout", 0.6, "drop out")
+tf.app.flags.DEFINE_float("dropout", 0.1, "drop out")
 
 tf.app.flags.DEFINE_string("action", 'predict', "train | predict")
 FLAGS = tf.app.flags.FLAGS
