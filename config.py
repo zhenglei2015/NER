@@ -11,11 +11,11 @@ tf.app.flags.DEFINE_string("word_embedding_file", 'resource/embeddings.txt', "ex
 tf.app.flags.DEFINE_string("model_path", 'resource/model/', "model save path")
 # 这里默认词向量的维度是300, 如果自行训练的词向量维度不是300,则需要该这里的值。
 tf.app.flags.DEFINE_integer("embeddings_size", 300, "Size of word embedding.")
-tf.app.flags.DEFINE_integer("max_sequence", 100, "max sequence length.")
+tf.app.flags.DEFINE_integer("max_sequence", 200, "max sequence length.")
 
 tf.app.flags.DEFINE_integer("batch_size", 128, "batch size.")
-tf.app.flags.DEFINE_integer("epoch", 1000, "epoch.")
-tf.app.flags.DEFINE_float("dropout", 0.1, "drop out")
+tf.app.flags.DEFINE_integer("epoch", 20000, "epoch.")
+tf.app.flags.DEFINE_float("dropout", 1.0, "drop out")
 
-tf.app.flags.DEFINE_string("action", 'predict', "train | predict")
+tf.app.flags.DEFINE_string("action", 'train', "train | predict")
 FLAGS = tf.app.flags.FLAGS

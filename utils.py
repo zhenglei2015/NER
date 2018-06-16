@@ -277,7 +277,7 @@ def tag_to_id_table():
     #return lookup_ops.index_to_string_table_from_file(
     #    tgt_vocab_file, default_value='<tag-unknown>')
     fi = open(tgt_vocab_file, "r")
-    table = []
+    table = ["0"] # start from 0
     for line in fi:
         table.append(line.strip())
     return table
@@ -299,11 +299,11 @@ def write_result_to_file(iterator, tags, cnt):
         fi = open("result.txt", "a")
         for w,t in zip(words, tags):
             fi.write(w + " " + t + "\n")
-            print w, " ", t
+        #    print w, " ", t
         fi.write("\n")
         fi.close()
-        print
-        print '*' * 100
+        #print
+        #print '*' * 100
 
 
 build_word_index()

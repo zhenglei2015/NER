@@ -4,6 +4,7 @@ from sklearn.metrics import precision_score, recall_score, f1_score
 from utils import *
 import time
 import math
+from test import cal_f1
 BATCH_SIZE = config.FLAGS.batch_size
 unit_num = embeddings_size         # 默认词向量的大小等于RNN(每个time step) 和 CNN(列) 中神经单元的个数, 为了避免混淆model中全部用unit_num表示。
 time_step = max_sequence      # 每个句子的最大长度和time_step一样,为了避免混淆model中全部用time_step表示。
@@ -11,7 +12,11 @@ DROPOUT_RATE = config.FLAGS.dropout
 EPOCH = config.FLAGS.epoch
 TAGS_NUM = get_class_size()
 
-
+predict_net = None
+predict_sess = None
+train_sess = None
+train_net = None
+embedding = None
 class NER_net:
     def __init__(self, scope_name, iterator, embedding, batch_size):
         '''
@@ -77,7 +82,7 @@ def train(net, iterator, sess):
     if ckpt is not None:
         path = ckpt.model_checkpoint_path
         print 'loading pre-trained model from %s.....' % path
-        saver.restore(sess, path)
+        #saver.restore(sess, path)
 
     current_epoch = sess.run(net.global_step)
     tag_table = tag_to_id_table()
@@ -93,12 +98,10 @@ def train(net, iterator, sess):
                 print '*' * 100
 
             # 每隔10%的进度则save一次。
-            if current_epoch % (EPOCH / 10) == 0 and current_epoch != 0:
+            if current_epoch % (EPOCH / 50) == 0 and current_epoch != 0:
                 sess.run(tf.assign(net.global_step, current_epoch))
                 saver.save(sess, model_path+'points', global_step=current_epoch)
-                predict(net, tag_table, sess)
-
-
+                predict(predict_net, tag_table, predict_sess)
             current_epoch += 1
 
         except tf.errors.OutOfRangeError:
@@ -111,6 +114,7 @@ def train(net, iterator, sess):
 
 
 def predict(net, tag_table, sess):
+    predict_sess.run(predict_iterator.initializer)
     saver = tf.train.Saver()
     ckpt = tf.train.get_checkpoint_state(model_path)
     if ckpt is not None:
@@ -135,7 +139,6 @@ def predict(net, tag_table, sess):
             print 'Prediction finished!'
             break
         rnn_cost = time.time() - rnn_cost
-        print "rnn_cost", rnn_cost
         # 把batch那个维度去掉
         tf_unary_scores = np.squeeze(tf_unary_scores)
         crf_cost = time.time()
@@ -144,18 +147,19 @@ def predict(net, tag_table, sess):
             tf_unary_scores, tf_transition_params)
         tags = []
         viterbi_cost = time.time() - viterbi_cost
-        print "viterbi_cost", viterbi_cost
 
         loopup_cost = time.time()
 
         for id in viterbi_sequence:
-            #tags.append(sess.run(tag_table.lookup(tf.constant(id, dtype=tf.int64))))
+            #tags.append(sess.run(tag_table.lookup(tf.constant(id, dtype=tf.int64)))
             tags.append(tag_table[id])
         write_result_to_file(file_iter, tags, cnt)
         loopup_cost = time.time() - loopup_cost
-        print "lookup_cost", loopup_cost
         crf_cost = time.time() - crf_cost
-        print "crf_cost", crf_cost
+    print "cnt", cnt
+    cal_f1()
+    fi = open("result.txt", "w")
+    fi.close()
         # def write_result_to_file(iterator, tags):
         #     raw_content = next(iterator)
         #     words = raw_content.split()
@@ -191,6 +195,12 @@ if __name__ == '__main__':
 
     tag_table = tag_to_id_table()
     net = NER_net("ner", iterator, embedding, BATCH_SIZE)
+    predict_iterator = get_predict_iterator(src_vocab_table, vocab_size, 1)
+    predict_net = NER_net("predict_net", predict_iterator, embedding, 1)
+    predict_sess = tf.Session()
+    predict_sess.run(tf.global_variables_initializer())
+    tf.tables_initializer().run(session=predict_sess)
+
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
         sess.run(iterator.initializer)
