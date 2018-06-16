@@ -11,7 +11,7 @@ def write_nll():
         right.append(line)
     fi.close()
     fi = open("nll.txt", "w")
-    for i in range(len(guess)):
+    for i in range(min(len(guess), len(right))):
         s1 = right[i].split(" ")
         s2 = guess[i].split(" ")
         print right[i], guess[i]
@@ -21,6 +21,7 @@ def write_nll():
             fi.write(s1[0] + " " + s1[1].strip() + " " + s2[1])
         else:
             fi.write("\n")
+
 def split_file():
     fi = open("dev.eval", "r")
     word = open("predict.txt", "w")
@@ -28,8 +29,8 @@ def split_file():
         s = line.split(" ")
         if len(s) < 2:
             word.write("\n")
-        else :
-            word.write(s[0] + "\n")
+        else:
+            word.write(s[0] + " ")
     fi.close()
     word.close()
 
