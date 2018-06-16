@@ -27,7 +27,7 @@ def cal_f1():
     tag_file = "resource/target_vocab.txt"
     fi = open(tag_file, "r")
     tag_to_index_table = {}
-    tag_to_index_table["0"] = 0
+    #tag_to_index_table["0"] = 0
     index = 1
     for line in fi:
         line = line.strip()

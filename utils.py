@@ -277,7 +277,7 @@ def tag_to_id_table():
     #return lookup_ops.index_to_string_table_from_file(
     #    tgt_vocab_file, default_value='<tag-unknown>')
     fi = open(tgt_vocab_file, "r")
-    table = ["0"] # start from 0
+    table = [] # start from 0
     for line in fi:
         table.append(line.strip())
     return table
