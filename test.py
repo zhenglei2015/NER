@@ -49,4 +49,4 @@ def split_file():
     word.close()
 
 if __name__ == '__main__':
-    split_file()
+    write_nll()
