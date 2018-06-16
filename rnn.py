@@ -2,7 +2,7 @@
 from tensorflow.contrib.rnn import DropoutWrapper
 from utils import *
 import time
-import math 
+import math
 BATCH_SIZE = config.FLAGS.batch_size
 unit_num = embeddings_size         # 默认词向量的大小等于RNN(每个time step) 和 CNN(列) 中神经单元的个数, 为了避免混淆model中全部用unit_num表示。
 time_step = max_sequence      # 每个句子的最大长度和time_step一样,为了避免混淆model中全部用time_step表示。
@@ -135,12 +135,19 @@ def predict(net, tag_table, sess):
         # 把batch那个维度去掉
         tf_unary_scores = np.squeeze(tf_unary_scores)
         crf_cost = time.time()
+        viterbi_cost = time.time()
         viterbi_sequence, _ = tf.contrib.crf.viterbi_decode(
             tf_unary_scores, tf_transition_params)
         tags = []
+        viterbi_cost = time.time() - viterbi_cost
+        print "viterbi_cost", viterbi_cost
+
+        loopup_cost = time.time()
         for id in viterbi_sequence:
             tags.append(sess.run(tag_table.lookup(tf.constant(id, dtype=tf.int64))))
         write_result_to_file(file_iter, tags, cnt)
+        loopup_cost = time.time() - loopup_cost
+        print "lookup_cost", loopup_cost
         crf_cost = time.time() - crf_cost
         print "crf_cost", crf_cost
         # def write_result_to_file(iterator, tags):
