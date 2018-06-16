@@ -28,9 +28,9 @@ def split_file():
         if len(s) < 2:
             word.write("\n")
         else :
-            word.write(s[0] + "\n")
+            word.write(s[0] + " ")
     fi.close()
     word.close()
 
 if __name__ == '__main__':
-    split_file()
+    write_nll()
