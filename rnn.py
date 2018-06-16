@@ -73,7 +73,7 @@ class NER_net:
 
         # Add a training op to tune the parameters.
         self.loss = tf.reduce_mean(-self.log_likelihood)
-        self.train_op = tf.train.AdamOptimizer(learning_rate=1e-5, beta2=0.99).minimize(self.loss)
+        self.train_op = tf.train.AdamOptimizer(learning_rate=1e-3, beta2=0.99).minimize(self.loss)
 
 
 def train(net, iterator, sess):
@@ -129,6 +129,7 @@ def predict(net, tag_table, sess):
     # 获取原文本的iterator
     file_iter = file_content_iterator(pred_file)
     cnt = 0
+    different_id = {}
     while True:
         cnt += 1
         rnn_cost = time.time()
@@ -150,8 +151,10 @@ def predict(net, tag_table, sess):
         viterbi_cost = time.time() - viterbi_cost
 
         loopup_cost = time.time()
-
         for id in viterbi_sequence:
+            if not different_id.has_key(id):
+                different_id[id] = 1
+                print different_id.keys()
             #tags.append(sess.run(tag_table.lookup(tf.constant(id, dtype=tf.int64)))
             tags.append(tag_table[id])
         write_result_to_file(file_iter, tags, cnt)
