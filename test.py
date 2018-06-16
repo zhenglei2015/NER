@@ -21,6 +21,17 @@ def write_nll():
             fi.write(s1[0] + " " + s1[1].strip() + " " + s2[1])
         else:
             fi.write("\n")
+def split_file():
+    fi = open("dev.eval", "r")
+    word = open("predict.txt", "w")
+    for line in fi:
+        s = line.split(" ")
+        if len(s) < 2:
+            word.write("\n")
+        else :
+            word.write(s[0] + "\n")
+    fi.close()
+    word.close()
 
 if __name__ == '__main__':
-    write_nll()
+    split_file()
