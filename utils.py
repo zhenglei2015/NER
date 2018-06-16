@@ -287,7 +287,6 @@ def file_content_iterator(file_name):
         for line in f.readlines():
             yield line.strip()
 
-
 def write_result_to_file(iterator, tags, cnt):
     raw_content = next(iterator)
     words = raw_content.split()
