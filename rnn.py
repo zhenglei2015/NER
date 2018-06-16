@@ -143,9 +143,10 @@ def predict(net, tag_table, sess):
         print "viterbi_cost", viterbi_cost
 
         loopup_cost = time.time()
-	print viterbi_sequence
+
         for id in viterbi_sequence:
-            tags.append(sess.run(tag_table.lookup(tf.constant(id, dtype=tf.int64))))
+            #tags.append(sess.run(tag_table.lookup(tf.constant(id, dtype=tf.int64))))
+            tags.append(tag_table[id])
         write_result_to_file(file_iter, tags, cnt)
         loopup_cost = time.time() - loopup_cost
         print "lookup_cost", loopup_cost
@@ -194,5 +195,4 @@ if __name__ == '__main__':
         if action == 'train':
             train(net, iterator, sess)
         elif action == 'predict':
-
             predict(net, tag_table, sess)

@@ -5,6 +5,7 @@ import numpy as np
 import collections
 import config
 import os
+import sys
 
 src_file = config.FLAGS.src_file
 tgt_file = config.FLAGS.tgt_file
@@ -273,9 +274,13 @@ def load_word2vec_embedding(vocab_size):
 
 
 def tag_to_id_table():
-    return lookup_ops.index_to_string_table_from_file(
-        tgt_vocab_file, default_value='<tag-unknown>')
-
+    #return lookup_ops.index_to_string_table_from_file(
+    #    tgt_vocab_file, default_value='<tag-unknown>')
+    fi = open(tgt_vocab_file, "r")
+    table = []
+    for line in fi:
+        table.append(line.strip())
+    return table
 
 def file_content_iterator(file_name):
     with open(file_name, 'r') as f:
@@ -303,8 +308,6 @@ def write_result_to_file(iterator, tags, cnt):
 
 build_word_index()
 TAG_PADDING_ID = get_class_size() - 1
-
-
 
 
 '''
