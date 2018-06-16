@@ -1,3 +1,4 @@
+from sklearn.metrics import precision_score, recall_score, f1_score
 
 def write_nll():
     right = []
@@ -22,8 +23,17 @@ def write_nll():
         else:
             fi.write("\n")
 
-def cal_f1(tag_to_index_table):
-    tag_file = ""
+def cal_f1():
+    tag_file = "resource/target_vocab.txt"
+    fi = open(tag_file, "r")
+    tag_to_index_table = {}
+    tag_to_index_table["0"] = 0
+    index = 1
+    for line in fi:
+        line = line.strip()
+        tag_to_index_table[line] = index
+        index += 1
+    fi.close()
     write_nll()
     fi = open("nll.txt", "r")
     ground_truth = []
@@ -32,8 +42,13 @@ def cal_f1(tag_to_index_table):
         line = line.strip()
         s = line.split(" ")
         if len(s) > 1:
-            ground_truth.append(tag_to_index_table[s[0]])
-            pred.append(tag_to_index_table[s[1]])
+            ground_truth.append(tag_to_index_table[s[1]])
+            pred.append(tag_to_index_table[s[2]])
+    fi.close()
+    fi = open("f1score.txt", "a")
+    fi.write("f1 score" + str(f1_score(ground_truth, pred, average="macro")) + "\n")
+    fi.close()
+    print "f1 score", f1_score(ground_truth, pred, average="macro")
 
 
 def split_file():
@@ -49,4 +64,5 @@ def split_file():
     word.close()
 
 if __name__ == '__main__':
+    #cal_f1()
     write_nll()
