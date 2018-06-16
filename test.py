@@ -1,4 +1,3 @@
-
 def write_nll():
     right = []
     guess = []
@@ -15,11 +14,11 @@ def write_nll():
     for i in range(len(guess)):
         s1 = right[i].split(" ")
         s2 = guess[i].split(" ")
-
+        print right[i], guess[i]
         if len(s1) > 1:
             if s1[0] != s2[0]:
                 print i, s1[0], s2[0]
-            fi.write(s1[0] + " " + s1[1].replace("\n", "") + " " + s2[1])
+            fi.write(s1[0] + " " + s1[1].strip() + " " + s2[1])
         else:
             fi.write("\n")
 
