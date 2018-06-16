@@ -101,8 +101,8 @@ def train(net, iterator, sess):
             if current_epoch % (EPOCH / 50) == 0 and current_epoch != 0:
                 sess.run(tf.assign(net.global_step, current_epoch))
                 saver.save(sess, model_path+'points', global_step=current_epoch)
-		if current_epoch > EPOCH / 2:
-                	predict(predict_net, tag_table, predict_sess)
+		#if current_epoch > EPOCH / 2:
+                predict(predict_net, tag_table, predict_sess)
             current_epoch += 1
 
         except tf.errors.OutOfRangeError:
