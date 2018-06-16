@@ -143,6 +143,7 @@ def predict(net, tag_table, sess):
         print "viterbi_cost", viterbi_cost
 
         loopup_cost = time.time()
+	print viterbi_sequence
         for id in viterbi_sequence:
             tags.append(sess.run(tag_table.lookup(tf.constant(id, dtype=tf.int64))))
         write_result_to_file(file_iter, tags, cnt)
